@@ -1,12 +1,13 @@
-const userService = require("../services/user.service")
+const userService = require("../services/user.service");
+const mongoose = require("mongoose")
 const create = async (req, res) => {
   const { name, username, email, password, avatar, background } = req.body;
   if (!name || !email || !username || !password || !avatar || !background) {
     res.status(400).send({Message:"Submit all fields for registration."})
   }
 
-  const user = await userService.create(req.body)
-  if(!ser){
+  const user = await userService.createService(req.body)
+  if(!user){
     return res.status(400).send({
       message:"Error creating user"
     })
@@ -25,4 +26,36 @@ const create = async (req, res) => {
   })
 }
 
-module.exports = { create }
+const findAll= async (req,res)=>{
+  const users = await userService.findAllService();
+
+  if(users.length===0){
+    return res.status(400).send({message:"There are no registered users"})
+  } 
+  res.send(users)
+}
+
+const findById=async (req,res)=>{
+
+  const user = req.user;
+  res.send({user})
+}
+
+const update=async (req,res)=>{
+  const { name, username, email, password, avatar, background } = req.body;
+  if (!name && !email && !username && !password && !avatar && !background) {
+    res.status(400).send({Message:"Submit at least one field for update"})
+  }
+  const {id,user} = req
+  await userService.updateService(
+    id,
+    name,
+    username,
+    email,
+    password,
+    avatar,
+    background
+  )
+  res.send({message:"User successfully updated"});
+}
+module.exports = { create, findAll,findById,update}

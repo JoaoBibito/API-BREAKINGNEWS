@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const connectDatabase = () => {
   console.log("Wait connecting to the database");
 
-  mongoose.connect("mongodb+srv://joaoBibito:79878559@clusterbreakingnews.umxqlfh.mongodb.net/?retryWrites=true&w=majority",
+  mongoose.connect(`mongodb+srv://joaoBibito:${process.env.MONGODB_PASS}@clusterbreakingnews.umxqlfh.mongodb.net/?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("MongoDB Atlas Connected"))
     .catch((error) => console.log(error))

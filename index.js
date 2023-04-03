@@ -1,7 +1,9 @@
-require("dotenv").config();
-const express = require("express");
-const userRoute = require("./src/routes/user.routes");
-const connectDatabase =require("./src/database/db");
+import dotenv from "dotenv";
+dotenv.config();
+import express from 'express';
+import userRoute from "./src/routes/user.routes.js";
+import connectDatabase from "./src/database/db.js";
+
 
 const app = express();
 const port = 3000;

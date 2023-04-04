@@ -1,9 +1,8 @@
 import dotenv from "dotenv";
-dotenv.config();
 import express from 'express';
 import userRoute from "./src/routes/user.routes.js";
 import connectDatabase from "./src/database/db.js";
-
+dotenv.config();
 
 const app = express();
 const port = 3000;

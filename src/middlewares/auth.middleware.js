@@ -7,18 +7,17 @@ dotenv.config();
 export const authMiddleware = (req, res, next) => {
   try {
     const { authorization } = req.headers;
-
     if (!authorization) {
-      return res.status(401);
+      return res.sendStatus(401);
     }
     const parts = authorization.split(" ");
     const [schema, token] = parts;
 
     if (parts.length !== 2) {
-      return res.status(401);
+      return res.sendStatus(401);
     }
     if (schema !== "Bearer") {
-      return res.status(401);
+      return res.sendStatus(401);
     }
 
     jwt.verify(token, process.env.SECRET_JWT, async (err, decoded) => {

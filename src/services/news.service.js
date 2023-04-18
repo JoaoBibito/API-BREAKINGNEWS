@@ -17,4 +17,18 @@ export const searchByTitleService = (title) => News.find({
 
 export const byUserService = (id) => News.find({ user: id }).sort({ _id: -1 }).populate("user");
 
-export const updateService = (id,title,text,banner) => News.findOneAndUpdate({_id:id},{title,text,banner},{rowResult:true})
+export const updateService = (id, title, text, banner) => News.findOneAndUpdate({ _id: id }, { title, text, banner }, { rowResult: true })
+
+export const eraseService = (id) => News.findByIdAndDelete({ _id: id })
+
+export const likeNewsService = async (idNews, userId) => News.findOneAndUpdate({ _id: idNews, "likes.userId": { $nin: [userId] } },
+  { $push: { likes: { userId, created: new Date() } } })
+
+export const deleteLikeNewsService = async (idNews, userId) => News.findOneAndUpdate({ _id: idNews },
+  { $pull: { likes: { userId } } })
+
+export const addCommentService = async (idNews, comment, userId) => {
+  let idComment = Math.floor(Date.now() * Math.random()).toString(36);
+  return News.findOneAndUpdate({ _id: idNews },
+    { $push: { comments: { idComment, userId, comment, cratedAt: new Date() } } })
+}

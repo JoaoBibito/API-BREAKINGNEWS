@@ -6,7 +6,11 @@ import {
   findByIdService,
   searchByTitleService,
   byUserService,
-  updateService
+  updateService,
+  eraseService,
+  likeNewsService,
+  deleteLikeNewsService,
+  addCommentService
 } from "../services/news.service.js";
 
 export const create = async (req, res) => {
@@ -195,10 +199,78 @@ export const update = async (req, res) => {
     }
 
     await updateService(id, title, text, banner);
-    return res.send({ message: "Post successfully updated!" })
+    return res.send({ message: "News successfully updated!" })
   }
   catch (err) {
-    coole.log("erro", err)
+    console.log("erro", err)
+    return res.status(500).send({ message: err.message })
+  }
+}
+
+export const erase = async (req, res) => {
+  try {
+    const { id } = req.params
+    const news = await findByIdService(id);
+    if (!news) {
+      return res.sendStatus(404);
+    }
+    if (news.user._id != req.userId) {
+      return res.status(400).send({ message: "You didn't update this post" })
+    }
+    await eraseService(id);
+    return res.send({ message: "News deleted successfully" })
+  }
+  catch (err) {
+    console.log("erro", err)
+    return res.status(500).send({ message: err.message })
+  }
+}
+
+export const likeNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    const newsLiked = await likeNewsService(id, userId)
+    console.log(newsLiked)
+    if (!newsLiked) {
+      await deleteLikeNewsService(id, userId);
+      return res.status(200).send({ message: "Like successfully removed" })
+    }
+    res.send({ message: "Like done successfully" })
+  } catch (err) {
+    console.log("erro", err)
+    return res.status(500).send({ message: err.message })
+  }
+
+}
+
+export const addComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+    const { comment } = req.body;
+
+    if (!comment) {
+      return res.status(404).send({ message: "Write a message to comment" })
+    }
+    await addCommentService(id, comment, userId);
+
+    res.send({ message: "Comment successfully completed" })
+  } catch (err) {
+    console.log("erro", err)
+    return res.status(500).send({ message: err.message })
+  }
+}
+
+export const deleteComment = async (req, res) => {
+  try {
+    const { idNews, idComment } = req.params;
+    const userId = req.userId;
+
+    await deleteCommentService();
+  } catch (err) {
+    console.log("erro", err)
     return res.status(500).send({ message: err.message })
   }
 }

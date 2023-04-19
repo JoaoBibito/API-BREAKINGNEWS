@@ -32,3 +32,4 @@ export const addCommentService = async (idNews, comment, userId) => {
   return News.findOneAndUpdate({ _id: idNews },
     { $push: { comments: { idComment, userId, comment, cratedAt: new Date() } } })
 }
+export const deleteCommentService = async (idNews, idComment, userId) => News.findOneAndUpdate({ _id: idNews }, { $pull: { comments: { idComment, userId } } })

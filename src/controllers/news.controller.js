@@ -10,7 +10,8 @@ import {
   eraseService,
   likeNewsService,
   deleteLikeNewsService,
-  addCommentService
+  addCommentService,
+  deleteCommentService
 } from "../services/news.service.js";
 
 export const create = async (req, res) => {
@@ -268,7 +269,16 @@ export const deleteComment = async (req, res) => {
     const { idNews, idComment } = req.params;
     const userId = req.userId;
 
-    await deleteCommentService();
+    const commendtDeleted=await deleteCommentService(idNews,idComment,userId);
+
+    const commentFinder = commendtDeleted.comments.find(comment=> comment.idComment ===idComment)
+    if(!commentFinder){
+      return res.status(400).send({message:"Comment not found"})
+    }
+    if(commentFinder.userId!==userId){
+      return res.status(400).send({message:"You can't delete this comment"})
+    }
+    res.send({message:"Comment successfully removed"})
   } catch (err) {
     console.log("erro", err)
     return res.status(500).send({ message: err.message })

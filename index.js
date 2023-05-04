@@ -3,7 +3,7 @@ import connectDatabase from "./src/database/db.js";
 import userRoute from "./src/routes/user.routes.js";
 import authRoute from "./src/routes/auth.route.js";
 import newsRoute from "./src/routes/news.route.js";
-import swaggerRoute from "./src/routes/swagger.route.js";
+import swaggerRoute from "./src/routes/swagger.route.cjs";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();

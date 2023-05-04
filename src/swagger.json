@@ -1,0 +1,656 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "Title": "Breaking News API Documentation",
+    "Description": "in this documentation you will be able to consult the API end-points and also test all available routes. Do not forget to register and carry out the authorization",
+    "Contact": {
+      "email": "joao-vitor1903@live.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "Description": "Local Server"
+    }
+  ],
+  "paths": {
+    "/user/": {
+      "post": {
+        "summary": "Create a new user",
+        "Description": "Route responsible for creating a new user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Users"
+              },
+              "examples": {
+                "Users": {
+                  "value": {
+                    "name": "Amanda Rodrigues",
+                    "username": "amandaR",
+                    "email": "amanda@homail.com",
+                    "password": "123",
+                    "avatar": "https://i.pinimg.com/originals/3e/5b/a9/3e5ba9cf12565cbf201e2447753b9401.png",
+                    "backround": "https://img.freepik.com/premium-vector/business-strategy-wallpaper-black-white-marketing-seamless-pattern-tiling-textures-with-thin-line-web-icons-set-vector-illustration-abstract-background-mobile-app-website-presentation_521005-1287.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Not found"
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Users"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Search all users",
+        "description": "Route responsible for fetching all users",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Not found"
+          },
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "$ref": "#/components/schemas/Users"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Find user by id",
+        "description": "Route responsible for searching for user by id",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "User ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Not found"
+          },
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Users"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update user by id",
+        "description": "Route responsible for update a user by id",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "User ID",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Users"
+              }
+            },
+            "examples": {}
+          }
+        }
+      }
+    },
+    "/auth": {
+      "post": {
+        "summary": "Login to Breaking News",
+        "description": "Route responsible for loggin in a registered user",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Users"
+              },
+              "examples": {
+                "User": {
+                  "value": {
+                    "email": "jv@hotmail.com",
+                    "password": "123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auth"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/news": {
+      "post": {
+        "summary": "Create a new post",
+        "description": "Route responsible for creating a new",
+        "tags": [
+          "News"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/News"
+              },
+              "examples": {
+                "News": {
+                  "value": {
+                    "title": "Post Example",
+                    "text": "This post is a example created by swagger",
+                    "banner": "bannerUrl.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/News"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "summary": "Find all posts",
+        "description": "Route responsible for fetching all posts",
+        "tags": [
+          "News"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "There are no registered news"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/News"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/news/top": {
+      "get": {
+        "summary": "Find the top posts",
+        "description": "Route responsible for fetching the top posts",
+        "tags": [
+          "News"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/News"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/news/search": {
+      "get": {
+        "summary": "Find post by title",
+        "description": "Route responsible for find posts by title",
+        "tags": [
+          "News"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "title",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "there are no news with this title"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/News"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/news/byUser": {
+      "get": {
+        "summary": "Find post by user id",
+        "description": "Route responsible for fetching news by user id",
+        "tags": [
+          "News"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/News"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/news/{id}": {
+      "get": {
+        "summary": "Find post by id",
+        "description": "Route responsible for find post by id",
+        "tags": [
+          "News"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/News"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch":{
+        "summary":"Update a post by id",
+        "description":"Route responsible for update a post by id",
+        "tags":["News"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters":[
+          {
+            "in":"query",
+            "name":"id",
+            "type":"string"
+          }
+        ],
+        "requestBody":{
+          "content":{
+            "application/json":{
+              "schema":{
+                "$ref":"#/components/schemas/News"
+              },
+              "examples":{
+                "News":{
+                  "value":{
+                    "title":"Post will be updated",
+                    "banner":"UrlBanner.com",
+                    "text":"This is a example for update"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses":{
+          "200":{
+            "description":"News successfully updated!"
+          },
+          "400":{
+            "description":"You didn't update this post"
+          }
+        }
+      },
+      "delete":{
+        "summary":"Delete a post by id",
+        "description":"Route responsible for deleting a post by id",
+        "tags":["News"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters":[
+          {
+            "in":"query",
+            "name":"id",
+            "type":"string"
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "News deleted successfully"
+          },
+          "400":{
+            "description":"You didn't update this post"
+          }
+        }
+      }
+    },
+    "/news/like/{id}":{
+      "patch":{
+        "summary":"Like or unlike post by id",
+        "description":"Route responsible for like or unlike a post",
+        "tags":["News"],
+        "security":[
+          {
+            "bearerAuth":{}
+          }
+        ],
+        "parameters":[
+          {
+            "in":"query",
+            "name":"id",
+            "type":"string"
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"Like done successfully / Like successfully removed"
+          }
+        }
+      }
+    },
+    "news/comment/{id}":{
+      "patch":{
+        "summary":"Create a comment",
+        "description":"Route responsible for creating a comment",
+        "tags":["Comment"],
+        "security":[
+          {
+            "bearerAuth":{}
+          }
+        ],
+        "parameters":[
+          {
+            "in":"query",
+            "name":"id",
+            "type":"string"
+          }
+        ],
+        "requestBody":{
+          "content":{
+            "application/json":{
+              "schema":{
+                "$ref":"#/components/schemas/Comment"
+              },
+              "examples":{
+                "Comment":{
+                  "value":{
+                    "message":"Comment text to post"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses":{
+          "200":{
+            "description":"Comment successfully completed"
+          },
+          "400":{
+            "description":"Write a message to comment"
+          }
+        }
+      }
+    },
+    "news/comment/{idNews}/{idComment}":{
+      "patch":{
+        "summary":"Delete post's comment",
+        "description":"Route responsible for deleting a comment",
+        "tags":["Comment"],
+        "security":[
+          {
+            "bearerAuth":{}
+          }
+        ],
+        "parameters":[
+          {
+            "in":"query",
+            "name":"idNews",
+            "type":"string"
+          },
+          {
+            "in":"query",
+            "name":"idComment",
+            "type":"string"
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"Comment successfully removed"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Users": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "background ": {
+            "type": "string"
+          }
+        }
+      },
+      "News": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string"
+          },
+          "banner": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "likes": {
+            "type": "number"
+          },
+          "comments": {
+            "type": "array"
+          },
+          "createdAt": {
+            "type": "date"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Auth": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -20,7 +20,6 @@ const create = async (req, res) => {
         name,
         username,
         email,
-        password,
         avatar,
         background
       }

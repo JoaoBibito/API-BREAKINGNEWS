@@ -1,10 +1,10 @@
-const router = require("express").Router();
+import {Router} from "express";
 
-const swaggerUI =require("swagger-ui-express");
-  const swaggerDocumentation =require("../swagger.json")
+import swaggerUI from "swagger-ui-express";
+import swaggerDocumentation from "../swagger.json" assert {type:"json"};
 
+const swaggerRouter = Router();
+swaggerRouter.use("/", swaggerUI.serve);
+swaggerRouter.get("/", swaggerUI.setup(swaggerDocumentation));
 
-router.use("/",swaggerUI.serve);
-router.get("/",swaggerUI.setup(swaggerDocumentation))
-module.exports =  router
-
+export default swaggerRouter;

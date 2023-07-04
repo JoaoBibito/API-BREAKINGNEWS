@@ -3,29 +3,29 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 const newsRouter = Router();
 
 import {
-  create,
-  findAll,
-  topNews,
-  findById,
-  searchByTitle,
-  byUser,
-  update,
-  erase,
-  likeNews,
-  addComment,
-  deleteComment
+  createNewsController,
+  findAllNewsController,
+  topNewsController,
+  findByIdController,
+  searchByTitleController,
+  byUserController,
+  updateController,
+  eraseController,
+  likeNewsController,
+  addCommentController,
+  deleteCommentController
 } from "../controllers/news.controller.js"
 
-newsRouter.post("/", authMiddleware, create);
-newsRouter.get("/", findAll);
-newsRouter.get("/top", topNews);
-newsRouter.get("/search", searchByTitle);
-newsRouter.get("/byUser", authMiddleware, byUser);
-newsRouter.get("/:id", authMiddleware, findById);
-newsRouter.patch("/:id", authMiddleware, update);
-newsRouter.delete("/:id", authMiddleware, erase);
-newsRouter.patch("/like/:id", authMiddleware, likeNews);
-newsRouter.patch("/comment/:id", authMiddleware, addComment);
-newsRouter.patch("/comment/:idNews/:idComment", authMiddleware, deleteComment)
+newsRouter.post("/", authMiddleware, createNewsController);
+newsRouter.get("/", findAllNewsController);
+newsRouter.get("/top", topNewsController);
+newsRouter.get("/search", searchByTitleController);
+newsRouter.get("/byUser", authMiddleware, byUserController);
+newsRouter.get("/:id", authMiddleware, findByIdController);
+newsRouter.patch("/:id", authMiddleware, updateController);
+newsRouter.delete("/:id", authMiddleware, eraseController);
+newsRouter.patch("/like/:id", authMiddleware, likeNewsController);
+newsRouter.patch("/comment/:id", authMiddleware, addCommentController);
+newsRouter.patch("/comment/:idNews/:idComment", authMiddleware, deleteCommentController)
 
 export default newsRouter

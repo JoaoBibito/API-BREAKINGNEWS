@@ -41,7 +41,7 @@ const findAllUserService = async () => {
 
 const findUserByIdService = async (userId, userIdLogged) => {
  let idParam;
- if (!userid) {
+ if (!userId) {
   userId = userIdLogged;
   idParam = userId;
  } else {
@@ -56,7 +56,7 @@ const findUserByIdService = async (userId, userIdLogged) => {
 
 const updateUserService = async (body, userId
 ) => {
-  const  {name, username, email, password, avatar, background}=body
+  const  {name, username, email, password, avatar, background}=body 
  if (!name && !email && !username && !password && !avatar && !background)
   throw new Error("Submit at least one field for update");
 

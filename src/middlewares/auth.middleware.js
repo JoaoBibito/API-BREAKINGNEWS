@@ -24,7 +24,7 @@ export const authMiddleware = (req, res, next) => {
       if (err) {
         return res.status(500).send({ message: "Token invalid" });
       }
-      const user = await userService.findByIdService(decoded.id);
+      const user = await userService.findUserByIdService(decoded.id);
       if (!user || !user.id) {
         return res.status(500).send({ message: "Token invalid" });
       }

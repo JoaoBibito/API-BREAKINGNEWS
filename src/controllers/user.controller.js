@@ -14,18 +14,17 @@ const findAllUserController = async (req, res) => {
  try {
   const users = await userService.findAllUserService();
 
-   return res.send(users);
-
+  return res.send(users);
  } catch (e) {
   return res.status(500).send(e.message);
  }
 };
 
 const findUserByIdController = async (req, res) => {
-  const {id:userId}=req.params
-  const userIdLogged=req.userId
+ const {id: userId} = req.params;
+ const userIdLogged = req.userId;
  try {
-  const user = await userService.findUserByIdService(userId,userIdLogged)
+  const user = await userService.findUserByIdService(userId, userIdLogged);
   return res.send(user);
  } catch (e) {
   return res.status(500).send(e.message);
@@ -33,16 +32,18 @@ const findUserByIdController = async (req, res) => {
 };
 
 const updateUserController = async (req, res) => {
-  const body =req.body
-  const userId = req.userId
-  try {
- 
-  const response = await userService.updateUserService(
-   body,userId
-  );
+  const {name, username, email, avatar,password,background} =  req.body;
+ const userId = req.id;
+ try {
+  const response = await userService.updateUserService({name, username, email, avatar,password, background} , userId);
   res.send(response);
  } catch (e) {
   return res.status(500).send(e.message);
  }
 };
-export default {createUserController, findAllUserController, findUserByIdController, updateUserController};
+export default {
+ createUserController,
+ findAllUserController,
+ findUserByIdController,
+ updateUserController,
+};

@@ -7,12 +7,13 @@ const findAllUserRepository = () => User.find();
 
 const findUserByIdRepository = (id) => User.findById(id);
 
-const updateUserRepository = (id, body) =>
+const updateUserRepository = (
+ id,
+ {name, username, email, avatar, password, background}
+) =>
  User.findOneAndUpdate(
   {_id: id},
-  {
-   body,
-  },
+  {name, username, email, avatar, password, background},
   {rawResult: true}
  );
 

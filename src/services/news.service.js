@@ -32,80 +32,80 @@ export const findAllNewsService = async (query, currentURL) => {
  }
  const news = await newsRepositories.findAllNewsRepository(offset, limit);
  const total = await countNews();
- const next=offset+limit;
- const nextURL = next<total?`${currentURL}?limit=${limit}&offset=${next}`:null
- const previous=offset-limit<0?null:offset-limit
- const previousURL=previous!=null?`${currentURL}?limit=${limit}&offset=${previous}`:null
+ const next = offset + limit;
+ const nextURL =
+  next < total ? `${currentURL}?limit=${limit}&offset=${next}` : null;
+ const previous = offset - limit < 0 ? null : offset - limit;
+ const previousURL =
+  previous != null ? `${currentURL}?limit=${limit}&offset=${previous}` : null;
 
  news.unshift();
- return({
+ return {
   nextURL,
   previousURL,
   limit,
   offset,
   total,
-  results:news.map((item)=>({
-    id: item._id,
-    title: item.title,
-    text: item.text,
-    banner: item.banner,
-    likes: item.likes,
-    comments: item.comments,
-    name: item.user.name,
-    userName: item.user.username,
-    userAvatar: item.user.avatar,
-  }))
- })
+  results: news.map((item) => ({
+   id: item._id,
+   title: item.title,
+   text: item.text,
+   banner: item.banner,
+   likes: item.likes,
+   comments: item.comments,
+   name: item.user.name,
+   userName: item.user.username,
+   userAvatar: item.user.avatar,
+  })),
+ };
 };
 
-export const countNews = async () =>{
-  const totalNews = await newsRepositories.countNewsRepository()
-  return totalNews
-}
+export const countNews = async () => {
+ const totalNews = await newsRepositories.countNewsRepository();
+ return totalNews;
+};
 
-export const topNewsService = async () =>{
-const news = await newsRepositories.topNewsRepository();
-return {
+export const topNewsService = async () => {
+ const news = await newsRepositories.topNewsRepository();
+ return {
   news: {
-    id: news._id,
-    title: news.title,
-    text: news.text,
-    banner: news.banner,
-    likes: news.likes,
-    comments: news.comments,
-    name: news.user.name,
-    userName: news.user.username,
-    userAvatar: news.user.avatar,
-   }
-}
-}
+   id: news._id,
+   title: news.title,
+   text: news.text,
+   banner: news.banner,
+   likes: news.likes,
+   comments: news.comments,
+   name: news.user.name,
+   userName: news.user.username,
+   userAvatar: news.user.avatar,
+  },
+ };
+};
+export const searchNewsByTitleService = async (title) => {
+ const news = await newsRepositories.searchNewsByTitleRepository(title);
+ if (news.length === 0) throw new Error("there are no news with this title");
+ return {
+  results: news.map((item) => ({
+   id: item._id,
+   title: item.title,
+   text: item.text,
+   banner: item.banner,
+   likes: item.likes,
+   comments: item.comments,
+   name: item.user.name,
+   userName: item.user.username,
+   userAvatar: item.user.avatar,
+  })),
+ };
+};
+
+export const byUserService = async (id) => {
+ const news = await newsRepositories.byUserRepository(id);
+ if (news.length === 0) throw new Error("there are no news from this user");
+ return news;
+};
 
 export const findByIdService = (id) => News.findById(id).populate("user");
-
-export const searchByTitleService = async (title) =>{
-  const news = await newsRepositories.searchNewsByTitleRepository(title);
-  if(news.length===0) throw new Error("there are no news with this title")
-  return{
-    results: news.map((item) => ({
-      id: item._id,
-      title: item.title,
-      text: item.text,
-      banner: item.banner,
-      likes: item.likes,
-      comments: item.comments,
-      name: item.user.name,
-      userName: item.user.username,
-      userAvatar: item.user.avatar,
-     }))
-  }
-//  News.find({
-//   title: {$regex: `${title || ""}`, $options: "i"},
-//  })
-//   .sort({_id: -1})
-//   .populate("user");
-}
-export const byUserService = (id) =>
- News.find({user: id}).sort({_id: -1}).populate("user");
 
 export const updateService = (id, title, text, banner) =>
  News.findOneAndUpdate({_id: id}, {title, text, banner}, {rowResult: true});

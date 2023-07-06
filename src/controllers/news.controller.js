@@ -4,7 +4,7 @@ import {
  countNews,
  topNewsService,
  findByIdService,
- searchByTitleService,
+ searchNewsByTitleService,
  byUserService,
  updateService,
  eraseService,
@@ -25,8 +25,8 @@ export const createNewsController = async (req, res) => {
 
 export const findAllNewsController = async (req, res) => {
  try {
-  const news = await findAllNewsService(req.query,req.baseUrl);
-  return res.send(news)
+  const news = await findAllNewsService(req.query, req.baseUrl);
+  return res.send(news);
  } catch (err) {
   return res.status(500).send({message: err.message});
  }
@@ -35,7 +35,7 @@ export const findAllNewsController = async (req, res) => {
 export const topNewsController = async (req, res) => {
  try {
   const news = await topNewsService();
-  console.log(news)
+  console.log(news);
   if (!news) {
    return res.status(400).send({message: "There is no registered post"});
   }
@@ -47,31 +47,18 @@ export const topNewsController = async (req, res) => {
 
 export const searchByTitleController = async (req, res) => {
  try {
-  const news = await searchByTitleService(req.query.title);
+  const news = await searchNewsByTitleService(req.query.title);
   return res.send(news);
- } catch (err) {
-  return res.status(500).send({message: err.message});
+ } catch (e) {
+  return res.status(500).send(e.message);
  }
 };
 
 export const byUserController = async (req, res) => {
  try {
-  const id = req.userId;
-  const news = await byUserService(id);
-
-  return res.send({
-   results: news.map((item) => ({
-    id: item._id,
-    title: item.title,
-    text: item.text,
-    banner: item.banner,
-    likes: item.likes,
-    comments: item.comments,
-    name: item.user.name,
-    userName: item.user.username,
-    userAvatar: item.user.avatar,
-   })),
-  });
+  const news = await byUserService(req.userId);
+  console.log(news)
+  return res.send(news)
  } catch (err) {
   return res.status(500).send({message: err.message});
  }

@@ -33,9 +33,11 @@ const findUserByIdController = async (req, res) => {
 
 const updateUserController = async (req, res) => {
   const {name, username, email, avatar,password,background} =  req.body;
- const userId = req.id;
- try {
-  const response = await userService.updateUserService({name, username, email, avatar,password, background} , userId);
+  const {id: userId} = req.params;
+
+ const userIdLogged=req.userId
+   try {
+  const response = await userService.updateUserService({name, username, email, avatar,password, background} , userId,userIdLogged);
   res.send(response);
  } catch (e) {
   return res.status(500).send(e.message);

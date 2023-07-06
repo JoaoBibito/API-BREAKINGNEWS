@@ -47,12 +47,12 @@ const findUserByIdService = async (userId, userIdLogged) => {
  return user;
 };
 
-const updateUserService = async ({name, username, email, avatar,password, background} , userId) => {
+const updateUserService = async ({name, username, email, avatar,password, background} , userId,userIdLogged) => {
  if (!name && !email && !username && !password && !avatar && !background)
   throw new Error("Submit at least one field for update");
  const user = await userRepositories.findUserByIdRepository(userId);
 
- if (user._id != userId) throw new Error("You cannot update this user");
+ if (user._id != userIdLogged) throw new Error("You cannot update this user");
 
  if (password) password = await bcrypt.hash(password, 10);
 

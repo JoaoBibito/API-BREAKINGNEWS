@@ -6,11 +6,11 @@ import {
   createNewsController,
   findAllNewsController,
   topNewsController,
-  findByIdController,
-  searchByTitleController,
+  findNewsByIdController,
+  searchNewsByTitleController,
   byUserController,
-  updateController,
-  eraseController,
+  updateNewsController,
+  eraseNewsController,
   likeNewsController,
   addCommentController,
   deleteCommentController
@@ -19,11 +19,11 @@ import {
 newsRouter.post("/", authMiddleware, createNewsController);
 newsRouter.get("/", findAllNewsController);
 newsRouter.get("/top", topNewsController);
-newsRouter.get("/search", searchByTitleController);
+newsRouter.get("/search", searchNewsByTitleController);
 newsRouter.get("/byUser", authMiddleware, byUserController);
-newsRouter.get("/:id", authMiddleware, findByIdController);
-newsRouter.patch("/:id", authMiddleware, updateController);
-newsRouter.delete("/:id", authMiddleware, eraseController);
+newsRouter.get("/:id", authMiddleware, findNewsByIdController);
+newsRouter.patch("/:id", authMiddleware, updateNewsController);
+newsRouter.delete("/:id", authMiddleware, eraseNewsController);
 newsRouter.patch("/like/:id", authMiddleware, likeNewsController);
 newsRouter.patch("/comment/:id", authMiddleware, addCommentController);
 newsRouter.patch("/comment/:idNews/:idComment", authMiddleware, deleteCommentController)

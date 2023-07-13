@@ -3,11 +3,11 @@ import {
  findAllNewsService,
  countNews,
  topNewsService,
- findByIdService,
+ findNewsByIdService,
  searchNewsByTitleService,
  byUserService,
- updateService,
- eraseService,
+ updateNewsService,
+ eraseNewsService,
  likeNewsService,
  deleteLikeNewsService,
  addCommentService,
@@ -35,17 +35,13 @@ export const findAllNewsController = async (req, res) => {
 export const topNewsController = async (req, res) => {
  try {
   const news = await topNewsService();
-  console.log(news);
-  if (!news) {
-   return res.status(400).send({message: "There is no registered post"});
-  }
   return res.send(news);
  } catch (err) {
   return res.sendStatus(500).send({message: err.message});
  }
 };
 
-export const searchByTitleController = async (req, res) => {
+export const searchNewsByTitleController = async (req, res) => {
  try {
   const news = await searchNewsByTitleService(req.query.title);
   return res.send(news);
@@ -57,69 +53,42 @@ export const searchByTitleController = async (req, res) => {
 export const byUserController = async (req, res) => {
  try {
   const news = await byUserService(req.userId);
-  console.log(news)
-  return res.send(news)
+  return res.send(news);
  } catch (err) {
   return res.status(500).send({message: err.message});
  }
 };
 
-export const findByIdController = async (req, res) => {
+export const findNewsByIdController = async (req, res) => {
  try {
   const {id} = req.params;
-  const news = await findByIdService(id);
-  return res.send({
-   news: {
-    id: news._id,
-    title: news.title,
-    text: news.text,
-    banner: news.banner,
-    likes: news.likes,
-    comments: news.comments,
-    name: news.user.name,
-    userName: news.user.username,
-    userAvatar: news.user.avatar,
-   },
-  });
+  const news = await findNewsByIdService(id);
+  return res.send(news);
  } catch (err) {
   return res.status(500).send({message: err.message});
  }
 };
 
-export const updateController = async (req, res) => {
+export const updateNewsController = async (req, res) => {
  try {
   const {title, text, banner} = req.body;
   const {id} = req.params;
+  const userIdLogged = req.userId;
 
-  if (!title && !text && !banner) {
-   return res.status(400).send({message: "Submit all fields for registration"});
-  }
-
-  const news = await findByIdService(id);
-
-  if (news.user._id != req.userId) {
-   return res.status(400).send({message: "You didn't update this post"});
-  }
-
-  await updateService(id, title, text, banner);
+  await updateNewsService(id, title, text, banner, userIdLogged);
   return res.send({message: "News successfully updated!"});
  } catch (err) {
   return res.status(500).send({message: err.message});
  }
 };
 
-export const eraseController = async (req, res) => {
+export const eraseNewsController = async (req, res) => {
  try {
-  const {id} = req.params;
-  const news = await findByIdService(id);
-  if (!news) {
-   return res.sendStatus(404);
-  }
-  if (news.user._id != req.userId) {
-   return res.status(400).send({message: "You didn't update this post"});
-  }
-  await eraseService(id);
-  return res.send({message: "News deleted successfully"});
+  const {id:newsId} = req.params;
+  const userIdLogged =req.userId;
+  const response = await eraseNewsService(newsId,userIdLogged);
+ 
+  return res.send(response);
  } catch (err) {
   return res.status(500).send({message: err.message});
  }
@@ -127,14 +96,9 @@ export const eraseController = async (req, res) => {
 
 export const likeNewsController = async (req, res) => {
  try {
-  const {id} = req.params;
-  const userId = req.userId;
-
-  const newsLiked = await likeNewsService(id, userId);
-  if (!newsLiked) {
-   await deleteLikeNewsService(id, userId);
-   return res.status(200).send({message: "Like successfully removed"});
-  }
+  const {id:idNews} = req.params;
+  const userIdLogged = req.userId;
+  const newsLiked = await likeNewsService( idNews,userIdLogged)
   res.send({message: "Like done successfully"});
  } catch (err) {
   return res.status(500).send({message: err.message});

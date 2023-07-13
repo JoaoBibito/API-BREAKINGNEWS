@@ -67,6 +67,7 @@ export const countNews = async () => {
 
 export const topNewsService = async () => {
  const news = await newsRepositories.topNewsRepository();
+ if (!news) throw new Error("There is no registered post");
  return {
   news: {
    id: news._id,
@@ -105,18 +106,49 @@ export const byUserService = async (id) => {
  return news;
 };
 
-export const findByIdService = (id) => News.findById(id).populate("user");
+export const findNewsByIdService = async (id) => {
+ const news = await newsRepositories.findNewsByIdRepository(id);
+ if(!news)  throw new Error("there are no news from this Id");
+ return {
+   id: news._id,
+   title: news.title,
+   text: news.text,
+   banner: news.banner,
+   likes: news.likes,
+   comments: news.comments,
+   name: news.user.name,
+   userId:news.user._id,
+   userName: news.user.username,
+   userAvatar: news.user.avatar
+ };
+};
 
-export const updateService = (id, title, text, banner) =>
- News.findOneAndUpdate({_id: id}, {title, text, banner}, {rowResult: true});
+export const updateNewsService = async (id, title, text, banner,userIdLogged) =>{
+  if (!title && !text && !banner)throw new Error("Submit all fields for registration")
+    const news = await findNewsByIdService(id);
+    if(!news)  throw new Error("there are no news from this Id");
+   if (news.userId != userIdLogged) throw new Error("You didn't update this post");
+ 
+   await newsRepositories.updateNewsRepository(id, title, text, banner);
+   return ({message: "News successfully updated!"});
+}
+export const eraseNewsService = async (newsId,userIdLogged) => {
+  const news = await findNewsByIdService(newsId);
+  if(!news)  throw new Error("there are no news from this Id");
+  if (news.userId != userIdLogged) throw new Error("You didn't deleted this post");
+  const newsDeleted = await newsRepositories.eraseNewsRepository(newsId);
+  if(!newsDeleted) throw new Error("Error deleting news")
+  return {message: "News deleted successfully"};
+}
 
-export const eraseService = (id) => News.findByIdAndDelete({_id: id});
-
-export const likeNewsService = async (idNews, userId) =>
- News.findOneAndUpdate(
-  {_id: idNews, "likes.userId": {$nin: [userId]}},
-  {$push: {likes: {userId, created: new Date()}}}
- );
+export const likeNewsService = async (idNews, userIdLogged) =>{
+  const newsLiked = await newsRepositories.likeNewsRepository(idNews,userIdLogged);
+  if (!newsLiked) {
+   await deleteLikeNewsService(idNews, userIdLogged);
+   return ({message: "Like successfully removed"});
+  }
+  return ({message: "Like done successfully"});
+};
 
 export const deleteLikeNewsService = async (idNews, userId) =>
  News.findOneAndUpdate({_id: idNews}, {$pull: {likes: {userId}}});

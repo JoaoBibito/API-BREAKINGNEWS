@@ -84,10 +84,10 @@ export const updateNewsController = async (req, res) => {
 
 export const eraseNewsController = async (req, res) => {
  try {
-  const {id:newsId} = req.params;
-  const userIdLogged =req.userId;
-  const response = await eraseNewsService(newsId,userIdLogged);
- 
+  const {id: newsId} = req.params;
+  const userIdLogged = req.userId;
+  const response = await eraseNewsService(newsId, userIdLogged);
+
   return res.send(response);
  } catch (err) {
   return res.status(500).send({message: err.message});
@@ -96,10 +96,10 @@ export const eraseNewsController = async (req, res) => {
 
 export const likeNewsController = async (req, res) => {
  try {
-  const {id:idNews} = req.params;
+  const {id: idNews} = req.params;
   const userIdLogged = req.userId;
-  const newsLiked = await likeNewsService( idNews,userIdLogged)
-  res.send({message: "Like done successfully"});
+  const newsLiked = await likeNewsService(idNews, userIdLogged);
+  res.send(newsLiked);
  } catch (err) {
   return res.status(500).send({message: err.message});
  }
@@ -107,16 +107,11 @@ export const likeNewsController = async (req, res) => {
 
 export const addCommentController = async (req, res) => {
  try {
-  const {id} = req.params;
+  const {id: idNews} = req.params;
   const userId = req.userId;
   const {comment} = req.body;
-
-  if (!comment) {
-   return res.status(404).send({message: "Write a message to comment"});
-  }
-  await addCommentService(id, comment, userId);
-
-  res.send({message: "Comment successfully completed"});
+  const response = await addCommentService(idNews, comment, userId);
+  res.send(response);
  } catch (err) {
   return res.status(500).send({message: err.message});
  }
@@ -126,19 +121,8 @@ export const deleteCommentController = async (req, res) => {
  try {
   const {idNews, idComment} = req.params;
   const userId = req.userId;
-
-  const commendtDeleted = await deleteCommentService(idNews, idComment, userId);
-
-  const commentFinder = commendtDeleted.comments.find(
-   (comment) => comment.idComment === idComment
-  );
-  if (!commentFinder) {
-   return res.status(400).send({message: "Comment not found"});
-  }
-  if (commentFinder.userId !== userId) {
-   return res.status(400).send({message: "You can't delete this comment"});
-  }
-  res.send({message: "Comment successfully removed"});
+  const response = await deleteCommentService(idNews, idComment, userId);
+  return res.send(response);
  } catch (err) {
   return res.status(500).send({message: err.message});
  }

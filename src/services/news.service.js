@@ -82,6 +82,7 @@ export const topNewsService = async () => {
   },
  };
 };
+
 export const searchNewsByTitleService = async (title) => {
  const news = await newsRepositories.searchNewsByTitleRepository(title);
  if (news.length === 0) throw new Error("there are no news with this title");
@@ -108,57 +109,93 @@ export const byUserService = async (id) => {
 
 export const findNewsByIdService = async (id) => {
  const news = await newsRepositories.findNewsByIdRepository(id);
- if(!news)  throw new Error("there are no news from this Id");
+ if (!news) throw new Error("there are no news from this Id");
  return {
-   id: news._id,
-   title: news.title,
-   text: news.text,
-   banner: news.banner,
-   likes: news.likes,
-   comments: news.comments,
-   name: news.user.name,
-   userId:news.user._id,
-   userName: news.user.username,
-   userAvatar: news.user.avatar
+  id: news._id,
+  title: news.title,
+  text: news.text,
+  banner: news.banner,
+  likes: news.likes,
+  comments: news.comments,
+  name: news.user.name,
+  userId: news.user._id,
+  userName: news.user.username,
+  userAvatar: news.user.avatar,
  };
 };
 
-export const updateNewsService = async (id, title, text, banner,userIdLogged) =>{
-  if (!title && !text && !banner)throw new Error("Submit all fields for registration")
-    const news = await findNewsByIdService(id);
-    if(!news)  throw new Error("there are no news from this Id");
-   if (news.userId != userIdLogged) throw new Error("You didn't update this post");
- 
-   await newsRepositories.updateNewsRepository(id, title, text, banner);
-   return ({message: "News successfully updated!"});
-}
-export const eraseNewsService = async (newsId,userIdLogged) => {
-  const news = await findNewsByIdService(newsId);
-  if(!news)  throw new Error("there are no news from this Id");
-  if (news.userId != userIdLogged) throw new Error("You didn't deleted this post");
-  const newsDeleted = await newsRepositories.eraseNewsRepository(newsId);
-  if(!newsDeleted) throw new Error("Error deleting news")
-  return {message: "News deleted successfully"};
-}
+export const updateNewsService = async (
+ id,
+ title,
+ text,
+ banner,
+ userIdLogged
+) => {
+ if (!title && !text && !banner)
+  throw new Error("Submit all fields for registration");
+ const news = await findNewsByIdService(id);
+ if (!news) throw new Error("there are no news from this Id");
+ if (news.userId != userIdLogged)
+  throw new Error("You didn't update this post");
 
-export const likeNewsService = async (idNews, userIdLogged) =>{
-  const newsLiked = await newsRepositories.likeNewsRepository(idNews,userIdLogged);
-  if (!newsLiked) {
-   await deleteLikeNewsService(idNews, userIdLogged);
-   return ({message: "Like successfully removed"});
-  }
-  return ({message: "Like done successfully"});
+ await newsRepositories.updateNewsRepository(id, title, text, banner);
+ return {message: "News successfully updated!"};
 };
 
-export const deleteLikeNewsService = async (idNews, userId) =>
- News.findOneAndUpdate({_id: idNews}, {$pull: {likes: {userId}}});
+export const eraseNewsService = async (newsId, userIdLogged) => {
+ const news = await findNewsByIdService(newsId);
+ if (!news) throw new Error("there are no news from this Id");
+ if (news.userId != userIdLogged)
+  throw new Error("You didn't deleted this post");
+ const newsDeleted = await newsRepositories.eraseNewsRepository(newsId);
+ if (!newsDeleted) throw new Error("Error deleting news");
+ return {message: "News deleted successfully"};
+};
 
-export const addCommentService = async (idNews, comment, userId) => {
- let idComment = Math.floor(Date.now() * Math.random()).toString(36);
- return News.findOneAndUpdate(
-  {_id: idNews},
-  {$push: {comments: {idComment, userId, comment, cratedAt: new Date()}}}
+export const likeNewsService = async (idNews, userIdLogged) => {
+ const newsLiked = await newsRepositories.likeNewsRepository(
+  idNews,
+  userIdLogged
  );
+ if (!newsLiked) {
+  const likeDeleted = await deleteLikeNewsService(idNews, userIdLogged);
+  return likeDeleted;
+ }
+ return {message: "Like done successfully"};
 };
-export const deleteCommentService = async (idNews, idComment, userId) =>
- News.findOneAndUpdate({_id: idNews}, {$pull: {comments: {idComment, userId}}});
+
+export const deleteLikeNewsService = async (idNews, userId) => {
+ const likeDeleted = await newsRepositories.deleteLikeNewsRepository(
+  idNews,
+  userId
+ );
+ if (!likeDeleted) throw new Error("Failed to delete the like");
+ return {message: "Like successfully removed"};
+};
+
+export const addCommentService = async (idNews, comment, userIdLogged) => {
+ if (!comment) throw new Error("Write a message to comment");
+
+ const commentCreated = await newsRepositories.addCommentNewsRepository(
+  idNews,
+  comment,
+  userIdLogged
+ );
+ if (!commentCreated) throw new Error("Error to add comment");
+ return {message: "Comment successfully completed"};
+};
+
+export const deleteCommentService = async (idNews, idComment, userIdLogged) =>{
+
+  const news = await newsRepositories.findNewsByIdRepository(idNews);
+if (!news) throw new Error("News not found");
+
+   const commendtDeleted = await newsRepositories.deleteCommentNewsRepository(idNews,idComment,userIdLogged);
+
+   const commentFinder=commendtDeleted.comments.find((comment) => comment.idComment === idComment)
+   if (!commentFinder) throw new Error("Comment not found") 
+  
+  if (commentFinder.userId !== userIdLogged) throw new Error("You can't delete this comment");
+  return {message: "Comment successfully removed"}
+}
+

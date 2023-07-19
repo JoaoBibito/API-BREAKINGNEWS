@@ -22,7 +22,7 @@ const byUserRepository = (id) =>
  News.find({user: id}).sort({_id: -1}).populate("user");
 
 const updateNewsRepository = (id, title, text, banner) =>
-News.findOneAndUpdate({_id: id}, {title, text, banner}, {rowResult: true});
+ News.findOneAndUpdate({_id: id}, {title, text, banner}, {rowResult: true});
 
 const eraseNewsRepository = (id) => News.findByIdAndDelete({_id: id});
 
@@ -42,8 +42,21 @@ const addCommentNewsRepository = async (idNews, comment, userId) => {
   {$push: {comments: {idComment, userId, comment, cratedAt: new Date()}}}
  );
 };
+
 const deleteCommentNewsRepository = async (idNews, idComment, userId) =>
- News.findOneAndUpdate({_id: idNews}, {$pull: {comments: {idComment, userId}}});
+ News.findOneAndUpdate(
+  {
+   _id: idNews,
+  },
+  {
+   $pull: {
+    comments: {
+     idComment: idComment,
+     userId: userId,
+    },
+   },
+  }
+ );
 
 export default {
  createNewsRepository,

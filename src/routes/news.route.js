@@ -16,7 +16,7 @@ import {
   deleteCommentController
 } from "../controllers/news.controller.js"
 
-newsRouter.post("/", authMiddleware, createNewsController);
+newsRouter.post("/", authMiddleware, createNewsController);//criar novo posta aqui
 newsRouter.get("/", findAllNewsController);
 newsRouter.get("/top", topNewsController);
 newsRouter.get("/search", searchNewsByTitleController);

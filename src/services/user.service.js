@@ -13,17 +13,7 @@ const createUserService = async (body) => {
   if (!user) throw new Error("Error creating user");
 
   const token = generateToken(user.id);
-  return {
-    user: {
-      id: user._id,
-      name,
-      username,
-      email,
-      avatar,
-      background,
-    },
-    token,
-  };
+  return token;
 };
 
 const findAllUserService = async () => {

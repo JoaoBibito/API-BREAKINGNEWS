@@ -3,8 +3,8 @@ import userService from "../services/user.service.js";
 const createUserController = async (req, res) => {
   const body = req.body;
   try {
-    const user = await userService.createUserService(body);
-    return res.status(201).send(user);
+    const token = await userService.createUserService(body);
+    return res.status(201).send(token);
   } catch (e) {
     return res.status(500).send(e.message);
   }

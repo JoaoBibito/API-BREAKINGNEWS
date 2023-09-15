@@ -6,7 +6,7 @@ dotenv.config();
 
 export const authMiddleware = (req, res, next) => {
   try {
-    const { authorization } = req.headers;
+    const {authorization} = req.headers;
     if (!authorization) {
       return res.sendStatus(401);
     }
@@ -22,17 +22,16 @@ export const authMiddleware = (req, res, next) => {
 
     jwt.verify(token, process.env.SECRET_JWT, async (err, decoded) => {
       if (err) {
-        return res.status(500).send({ message: "Token invalid" });
+        return res.status(500).send({message: "Token invalid"});
       }
       const user = await userService.findUserByIdService(decoded.id);
       if (!user || !user.id) {
-        return res.status(500).send({ message: "Token invalid" });
+        return res.status(500).send({message: "Token invalid"});
       }
       req.userId = user.id;
       return next();
-    })
+    });
+  } catch (err) {
+    return res.status(500).send({message: err});
   }
-  catch (err) {
-    return res.status(500).send({ message: err })
-  }
-}
+};
